@@ -1,11 +1,5 @@
 name: Run OPA Tests
-on:
-  push:
-    paths-ignore:
-      - '**.md' # Ignores all Markdown files
-      - '**.rego' # Ignore rego policies 
-      - '**.yaml' # Ignores yaml filesd
-      - '**.yml' # Ignores yaml filesd
+on: [push]
 jobs:
   Run-OPA-Tests:
     runs-on: ubuntu-latest
