@@ -1,0 +1,11 @@
+{
+  "name": "API_Rule_001",
+  "from": [ "Trust-PA220" ],
+  "to": [ "Untrust-PA220" ],
+  "source": [ "any" ],
+  "destination": [ "any" ],
+  "application": [ "web-browsing", "ssl" ],
+  "service": [ "application-default" ],
+  "action": "allow",
+  "log-start": "true"
+}
