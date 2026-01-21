@@ -1,19 +1,32 @@
 package palo_alto.compliance
 
-# Definimos una regla que agrupa todas las violaciones encontradas
-violations[msg] {
-    # 1. Iteramos sobre las reglas del JSON de entrada
-    rule := input.rules[_]
-    
-    # 2. Condición: La regla permite tráfico a "any"
-    rule.to == "any"
-    
-    # 3. Mensaje de error personalizado
-    msg := sprintf("Regla insegura detectada: '%s' tiene 'any' como destino.", [rule.name])
-}
+import rego.v1
 
-# Regla booleana simple
+# Regla para detectar violaciones
+violations[msg] if {
+    # Navegamos por la estructura exacta del JSON
+    # El [_] le dice a OPA: "recorre todos los elementos de esta lista"
+    rule := input.result.config.devices.entry[_].vsys.entry[_].rulebase.security.rules.entry[_]
+    
+    # Condición: Evaluamos si en la lista 'to' existe el valor "any"
+    rule.to[_] == "any"
+    
+    # Generamos el mensaje de error
+    msg := sprintf("Seguridad: La regla '%s' permite tráfico hacia 'any' (Inseguro)", [rule.name])
+}
+violations[msg] if {
+    # Navegamos por la estructura exacta del JSON
+    # El [_] le dice a OPA: "recorre todos los elementos de esta lista"
+    rule := input.result.config.devices.entry[_].vsys.entry[_].rulebase.security.rules.entry[_]
+    
+    # Condición: Evaluamos si en la lista 'to' existe el valor "any"
+    rule.destination[_] == "any"
+    
+    # Generamos el mensaje de error
+    msg := sprintf("Seguridad: La regla '%s' no puede tener un any como destination", [rule.name])
+}
+# Resultado global
 default allow = false
-allow {
+allow if {
     count(violations) == 0
 }
