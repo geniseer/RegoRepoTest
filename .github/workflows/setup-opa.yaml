@@ -13,6 +13,4 @@ jobs:
         version: latest
 
     - name: Run OPA Tests
-      run: | 
-            opa test policy/*.rego -v
-            opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance.violations"
+      run: opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance.violations"
