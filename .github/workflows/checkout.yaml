@@ -6,6 +6,6 @@ jobs:
     steps:
       - name: List Files Before Checkout 
         run: ls -a
-        uses: checkout@v3
+      - uses: actions/checkout@v3
       - name: List File After Checkout 
         run: ls -a
