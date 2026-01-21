@@ -4,18 +4,27 @@ on:
     paths-ignore:
       - '**.md' # Ignores all Markdown files
       - '**.rego' # Ignore rego policies 
-      - 'workflows/**' # Ignores files in workflow directory
+      - '**.yaml' # Ignores yaml filesd
+      - '**.yml' # Ignores yaml filesd
+      - 'workflows/.*' # Ignores files in workflow directory
+     outputs:
+       output1: ${{ steps.opa-validation.outputs.result }}
 jobs:
   Run-OPA-Tests:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
-
     - name: Setup OPA
+      id: opa-setup
       uses: open-policy-agent/setup-opa@v2
       with:
         version: latest
-
     - name: Run OPA Tests
-      run: opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance" --fail
+      id: opa-validation
+      run: |
+           API_RESULT = $(opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance" --fail) 
+           echo "result=API_RESULT" >> "$GITHUB_OUTPUT"
+    - name: show result
+         echo ${{ steps.opa-validation.outputs.result }}"
+    
