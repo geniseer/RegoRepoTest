@@ -12,8 +12,8 @@
                       "rules": {
                         "entry": [
                             {
-                                "name": "API_Rule_001",
-                                "from": [ "Trust-PA220" ],
+                                "name": "FWRule01",
+                                "from": [ "Trust" ],
                                 "to": [ "any" ],
                                 "source": [ "any" ],
                                 "destination": [ "any" ],
@@ -23,13 +23,13 @@
                                 "log-start": "true"
                                 },
                                  {
-                                "name": "API_Rule_002",
-                                "from": [ "Trust-PA220" ],
+                                "name": "FWRule01",
+                                "from": [ "Trust" ],
                                 "to": [ "Untrust" ],
                                 "source": [ "any" ],
                                 "destination": [ "any" ],
                                 "application": [ "web-browsing", "ssl" ],
-                                "service": [ "application-default" ],
+                                "service": [ "any" ],
                                 "action": "allow",
                                 "log-start": "true"
                                 }
