@@ -17,7 +17,7 @@ jobs:
       id: opa-validation
       run: |
        API_RESPONSE=$(opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance")
-       RES=$(echo "$API_RESPONSE" | jq -r '.result[0].expressions[0].value.allow' ')
+       RES=$(echo "$API_RESPONSE" | jq -r '.result[0].expressions[0].value.allow')
        echo "result=RES" >> $GITHUB_OUTPUT
     - name: OPA Show Results
       id: opa-show
