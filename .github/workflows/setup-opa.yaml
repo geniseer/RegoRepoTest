@@ -6,12 +6,11 @@ on:
       - '**.rego' # Ignore rego policies 
       - '**.yaml' # Ignores yaml filesd
       - '**.yml' # Ignores yaml filesd
-      - 'workflows/.*' # Ignores files in workflow directory
-     outputs:
-       output1: ${{ steps.opa-validation.outputs.result }}
 jobs:
   Run-OPA-Tests:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.opa-validation.outputs.result }}
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
@@ -26,5 +25,5 @@ jobs:
            API_RESULT = $(opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance" --fail) 
            echo "result=API_RESULT" >> "$GITHUB_OUTPUT"
     - name: show result
-         echo ${{ steps.opa-validation.outputs.result }}"
+      run : echo ${{ steps.opa-validation.outputs.result }}"
     
