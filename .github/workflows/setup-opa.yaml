@@ -21,4 +21,4 @@ jobs:
        echo "result=RES" >> $GITHUB_OUTPUT
     - name: OPA Show Results
       id: opa-show
-      run: echo $RES
+      run:  echo ${{ steps.opa-validation.outputs.result }}
