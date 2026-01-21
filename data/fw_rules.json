@@ -23,7 +23,7 @@
                                 "log-start": "true"
                                 },
                                  {
-                                "name": "FWRule01",
+                                "name": "FWRule02",
                                 "from": [ "Trust" ],
                                 "to": [ "Untrust" ],
                                 "source": [ "any" ],
