@@ -16,7 +16,7 @@ jobs:
     - name: Run OPA Tests
       id: opa-validation
       run: |
-           API_RESULT = $(opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance" --fail) 
+           export API_RESULT = $(opa eval -i  data/fw_rules.json -d policy  "data.palo_alto.compliance" --fail) 
            echo "result=API_RESULT" >> "$GITHUB_OUTPUT"
     - name: show result
       run : echo ${{ steps.opa-validation.outputs.result }}"
