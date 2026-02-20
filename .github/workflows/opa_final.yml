@@ -1,0 +1,84 @@
+name: OPA - Validate YAMLs
+
+on:
+  pull_request:
+    paths:
+      - "data/**/*.yml"
+      - "data/**/*.yaml"
+      - "policy/**/*.rego"
+  push:
+    branches: [ "main" ]
+    paths:
+      - "data/**/*.yml"
+      - "data/**/*.yaml"
+      - "policy/**/*.rego"
+  workflow_dispatch:
+
+jobs:
+  opa-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+
+      - name: Evaluate all YAML files in data/ with policies in policy/
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob globstar
+
+          files=(data/**/*.yml data/**/*.yaml)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No YAML files found under data/. Nothing to evaluate."
+            exit 0
+          fi
+
+          echo "Found ${#files[@]} YAML file(s) to evaluate:"
+          printf ' - %s\n' "${files[@]}"
+
+          failed=0
+
+          for f in "${files[@]}"; do
+            echo ""
+            echo "=============================="
+            echo "Evaluating: $f"
+            echo "=============================="
+
+            # Evalúa allow; si no es true => falla.
+            # -f raw devuelve literalmente "true" o "false"
+            allow="$(opa eval \
+              --data policy \
+              --input "$f" \
+              -f raw \
+              'data.firewall.validation.allow' || true)"
+
+            if [ "$allow" != "true" ]; then
+              echo "❌ FAILED: data.firewall.validation.allow = $allow"
+              echo ""
+              echo "Violations:"
+              # Imprimimos las violaciones para que quede claro en el log
+              opa eval \
+                --data policy \
+                --input "$f" \
+                -f pretty \
+                'data.firewall.validation.violations' || true
+              failed=1
+            else
+              echo "✅ PASSED: data.firewall.validation.allow = true"
+            fi
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            echo ""
+            echo "OPA evaluation failed: at least one file did not pass validation."
+            exit 1
+          fi
+
+          echo ""
+          echo "All OPA evaluations passed."
