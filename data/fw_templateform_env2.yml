@@ -1,0 +1,61 @@
+firewall_rule_request:
+  metadata:
+    request_type: "Firewall Rule Request"
+    change_type: "Add rule"
+
+  requester:
+    requested_for:
+      name: "Genesis Altagracia Espinal"
+      username: "gaespinalrivera"
+    approving_manager:
+      name: "Liam Lowry"
+
+  scope:
+    source_destination_type: "Internal App to External"
+    application_source: "ACH Upload Utility - Prod"
+    application_destination: ""
+
+  purpose:
+    business_justification: >
+      Allow outbound HTTPS communication from ACH Upload Utility - Prod
+      to ACI Sky Review - Prod to support production ACH processing workflows.
+
+    non_standard_ports:
+      used: false
+      justification: null
+
+    change_permanence:
+      permanent: true
+      expiration_date: null
+
+  rules:
+    - source:
+        - "10.65.0.50/20"
+        - "10.65.0.0/22"
+      destination:
+        - "20.53.15.2"
+      service:
+        port:
+          - "443"
+          - "1-1024"
+        protocol: "TCP"
+        application:
+          - "web-browsing"
+      data_classification: "NPI"
+
+    - source:
+        - "10.65.0.50/20"
+        - "10.65.1.x"
+        - "0.0.0.0"
+      destination:
+        - "www.bangard.com"
+      service:
+        port:
+          - "443"
+          - "80443"
+          - "3389"
+        protocol: "TCP"
+        application:
+          - "web-browsing"
+          - "ssl"
+      data_classification: "NPI"
