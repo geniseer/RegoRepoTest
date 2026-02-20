@@ -1,0 +1,123 @@
+name: "Solicitud: Regla de Firewall (App teams)"
+description: "Formulario para solicitar una o más reglas de firewall. Al enviarse, el pipeline generará un request.yml y abrirá un PR."
+title: "Solicitud de regla de firewall: {request_id}"
+labels: ["firewall-request", "needs-triage"]
+body:
+  - type: input
+    id: request_id
+    attributes:
+      label: "Request / Ticket ID"
+      description: "Ej: REQ-123456"
+      placeholder: "REQ-000000"
+      required: true
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: "Justificación"
+      description: "Explica por qué se necesita la regla, impacto y referencia al ticket."
+      required: true
+
+  - type: dropdown
+    id: traffic_flow
+    attributes:
+      label: "Traffic flow"
+      options:
+        - internal_to_internal
+        - internal_to_external
+        - external_to_internal
+      description: "Selecciona el flujo del tráfico"
+      required: true
+
+  - type: dropdown
+    id: rule_type
+    attributes:
+      label: "Tipo de regla"
+      options:
+        - standard
+        - exemption
+      required: true
+
+  - type: dropdown
+    id: periodicity
+    attributes:
+      label: "Periodicidad"
+      options:
+        - permanent
+        - temporary
+      required: true
+
+  - type: input
+    id: expiration_date
+    attributes:
+      label: "Fecha de expiración (YYYY-MM-DD)"
+      description: "Obligatoria si la periodicidad es 'temporary'. Dejar vacía si 'permanent'."
+      placeholder: "YYYY-MM-DD"
+      required: false
+
+  - type: input
+    id: source_application_name
+    attributes:
+      label: "Aplicación origen (nombre lógico)"
+      required: true
+
+  - type: dropdown
+    id: source_environment
+    attributes:
+      label: "Ambiente origen"
+      options:
+        - produccion
+        - no_produccion
+      required: true
+
+  - type: input
+    id: destination_application_name
+    attributes:
+      label: "Aplicación destino (nombre lógico)"
+      required: true
+
+  - type: dropdown
+    id: destination_environment
+    attributes:
+      label: "Ambiente destino"
+      options:
+        - produccion
+        - no_produccion
+      required: true
+
+  - type: textarea
+    id: rules_json
+    attributes:
+      label: "Reglas (JSON)"
+      description: |
+        Lista JSON de reglas. Ejemplo (copiar/pegar y sustituir):
+        [
+          {
+            "data_classification": "confidential",
+            "source": ["10.0.0.0/8","172.16.0.0/12"],
+            "destination": ["192.168.1.0/24"],
+            "protocol": "tcp",
+            "source_ports": ["any"],
+            "destination_ports": ["443","8443"]
+          }
+        ]
+      placeholder: '[{ "data_classification": "confidential", "source": ["10.0.0.0/8"], "destination": ["192.168.1.0/24"], "protocol": "tcp", "source_ports": ["any"], "destination_ports": ["443"] }]'
+      required: true
+
+  - type: input
+    id: username
+    attributes:
+      label: "Usuario solicitante (id)"
+      required: true
+
+  - type: input
+    id: full_name
+    attributes:
+      label: "Nombre completo del solicitante"
+      required: true
+
+  - type: input
+    id: manager_approver
+    attributes:
+      label: "Manager aprobador (user id)"
+      required: true
